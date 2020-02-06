@@ -1,0 +1,32 @@
+D\C I-V data: 
+	Vgap:  		  2.72	mV
+	fgap:  		658.53	GHz
+
+	Rn:    		 13.41	ohms
+	Rsg:   		364.50	ohms
+	Q:     		 27.18
+
+	Jc:    		 13.54	kA/cm^2
+	Ileak: 		  8.71	uA
+
+	Offset:		  0.10	mV
+	       		  9.67	uA
+
+	Vint:  		  0.45	mV
+	IF noise:	  8.44	K
+
+
+ -> Frequency: 230.2 GHz
+ -> Impedance recovery:
+	- good fit
+	- embedding circuit:
+		- voltage:     	 +0.53		* Vgap
+		- impedance:   	 +0.47-0.30j	* Rn		=	6.3027-4.023j
+		- avail. power:	 +41.42		nW
+	- junction:
+		- drive level:	 +0.93
+		- impedance:	 +0.75+0.08j	* Rn		= 	10.057500000000001+1.0728j
+		- deliv. power:	 +38.52		nW
+ -> Analyze IF data:
+	- noise temp:	  37.4 K
+	- gain:		 -1.14 dB

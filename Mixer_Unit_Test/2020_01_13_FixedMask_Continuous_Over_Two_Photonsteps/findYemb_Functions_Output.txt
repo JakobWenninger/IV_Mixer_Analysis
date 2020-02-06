@@ -1,0 +1,19 @@
+Masked Positive and Negative
+findYemb: array([6.35256200e-02, 5.67731210e-02, 1.47486834e+02])
+findYemb_iLO: array([0.06352562, 0.05677313])
+findYemb_Skalare: array([6.35256164e-02, 5.67731166e-02, 1.47486829e+02])
+findYemb_Skalare_fixed_iLO: array([0.0635256 , 0.05677312])
+M.yEmb_from_circuit(): array([5.73063190e-02, 5.94610986e-02, 1.43338041e+02])
+findZemb: array([ 8.75166291, -7.82139782])
+
+
+Masked Positive Only
+findYemb: array([5.39676931e-02, 5.76477859e-02, 1.39155871e+02])
+findYemb_iLO: array([0.05396769, 0.05764778])
+findYemb_Skalare: array([5.39676876e-02, 5.76477863e-02, 1.39155867e+02])
+findYemb_Skalare_fixed_iLO: array([0.05396769, 0.05764779])
+M.yEmb_from_circuit(): array([5.18529447e-02, 5.90214690e-02, 1.38050736e+02])
+findZemb: array([ 8.65452375, -9.24468152])
+
+
+{'fLO': 230200000000.0, 'tuckerSummationIndex': 15, 'steps_ImpedanceRecovery': 1, 'maskingWidth': [0.2, 1.75], 'tHot': 300.0, 'tCold': 77.0, 'descriptionMixer': '', 'skip_pumping_simulation': True, 'filenamestr': None, 'headerLines': 1, 'footerLines': 1, 'columnOffset': 0, 'currentFactorToMicroampere': 1000, 'junctionArea': None, 'normalResistance300K': None, 'numberOfBins': 2001, 'vmin': -6, 'vmax': 6, 'vGapSearchRange': array([2.5, 3.2]), 'rNThresholds': [3.2, 6], 'rSGThresholds': [1.2, 1.8], 'offsetThreshold': 0.5, 'savgolWindow': 91, 'savgolOrder': 3, 'simulationVoltageSteps': 0.0001, 'simulationVmin': -15, 'simulationVmax': 15, 'simulation_Sigma_Gaussian_Convolution_Guess': 0.07, 'skip_IV_simulation': False}

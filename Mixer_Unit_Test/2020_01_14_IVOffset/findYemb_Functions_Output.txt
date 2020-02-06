@@ -1,0 +1,22 @@
+Masked Positive and Negative
+findYemb: array([8.66846866e-02, 6.29597197e-02, 1.68880181e+02])
+findYemb_iLO: array([0.08668489, 0.06295979])
+findYemb_Skalare: array([8.66848139e-02, 6.29597260e-02, 1.68880288e+02])
+findYemb_Skalare_fixed_iLO: array([0.08668445, 0.06295964])
+M.yEmb_from_circuit(): array([6.69499588e-02, 6.03667706e-02, 1.51696523e+02])
+findZemb: array([ 7.55214376, -5.48518001])
+
+
+Masked Positive Only
+findYemb: array([7.94210336e-02, 6.04221058e-02, 1.61783493e+02])
+findYemb_iLO: array([0.07942081, 0.06042206])
+findYemb_Skalare: array([7.94205170e-02, 6.04219717e-02, 1.61783023e+02])
+findYemb_Skalare_fixed_iLO: array([0.07942089, 0.06042206])
+M.yEmb_from_circuit(): array([6.81662173e-02, 5.69198334e-02, 1.51440853e+02])
+findZemb: array([ 7.97516598, -6.06735919])
+
+
+{'fLO': 230200000000.0, 'tuckerSummationIndex': 15, 'steps_ImpedanceRecovery': 1, 'maskingWidth': None, 'tHot': 300.0, 'tCold': 77.0, 'descriptionMixer': '', 'skip_pumping_simulation': True, 'filenamestr': None, 'headerLines': 1, 'footerLines': 1, 'columnOffset': 0, 'currentFactorToMicroampere': 1000, 'junctionArea': None, 'normalResistance300K': None, 'numberOfBins': 2001, 'vmin': -6, 'vmax': 6, 'vGapSearchRange': array([2.5, 3.2]), 'rNThresholds': [3.2, 6], 'rSGThresholds': [1.2, 1.8], 'offsetThreshold': 0.5, 'savgolWindow': 91, 'savgolOrder': 3, 'fixedOffset': None, 'simulationVoltageSteps': 0.0001, 'simulationVmin': -15, 'simulationVmax': 15, 'simulation_Sigma_Gaussian_Convolution_Guess': 0.07, 'skip_IV_simulation': False}
+
+
+{'filenamestr': None, 'headerLines': 1, 'footerLines': 1, 'columnOffset': 0, 'currentFactorToMicroampere': 1000, 'junctionArea': None, 'normalResistance300K': None, 'numberOfBins': 2001, 'vmin': -6, 'vmax': 6, 'vGapSearchRange': array([2.5, 3.2]), 'rNThresholds': [3.2, 6], 'rSGThresholds': [1.2, 1.8], 'offsetThreshold': 0.5, 'savgolWindow': 91, 'savgolOrder': 3, 'fixedOffset': [0.101802, 9.67], 'simulationVoltageSteps': 0.0001, 'simulationVmin': -15, 'simulationVmax': 15, 'simulation_Sigma_Gaussian_Convolution_Guess': 0.07, 'skip_IV_simulation': False}

@@ -1,0 +1,96 @@
+\relax 
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The path of the signal passes several stages where the RF circuit, the SIS junction and the IF circuit are located on the mixer chip.\relax }}{1}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:Signal_Path}{{1}{1}}
+\citation{Tucker1985}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The Norton equivalent circuit of a Mixer chip has the embedding admittance parallel to the non-linear admittance of the SIS junction.\relax }}{2}}
+\newlabel{fig:NortonEquivalentCircuit}{{2}{2}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Theory}{2}}
+\newlabel{eq:UnpumpedPumpedRelation}{{1}{2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The unpumped IV curve has no RF power applied, while the pumped IV curve is driven with an RF signal. \relax }}{3}}
+\newlabel{fig:Unpumped_Pumped}{{3}{3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The AC quantities of the SIS junction branch of the Norton equivalent circuit is determined following this flow chart.\relax }}{3}}
+\newlabel{fig:FlowchartSISJunctionBranch}{{4}{3}}
+\newlabel{eq:PhotonVoltage}{{2}{4}}
+\newlabel{eq:IacSIS_Re}{{3}{4}}
+\newlabel{eq:IacSIS_Im}{{4}{4}}
+\newlabel{eq:ySISLinearisation}{{5}{4}}
+\newlabel{eq:Circuit_Equation}{{6}{4}}
+\newlabel{eq:ILO_From_Circuit}{{7}{4}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The IV data is recorded by sweeping the voltage up and down, starting close to 0\tmspace  +\thinmuskip {.1667em}V. The time axis shows the indexes of the IV entries in the \texttt  {.csv} file.\relax }}{5}}
+\newlabel{fig:rawDatabyTime}{{5}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}IV Response}{5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Data Handling}{5}}
+\newlabel{fig:rawDataSlopebyVoltage}{{6}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Determination of Characteristic Values}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces The data is recorded by sweeping the voltage up and down to include hysteresis behaviour. Sorting the dataset after increasing voltage leads to rapid fluctuations of the IV curve especially at the transition. This sorted dataset is filtered with Savitzky-Golay filter to obtain a smooth IV curve representing an average of the hysteresis.\relax }}{7}}
+\newlabel{fig:Sorted_vs_Unsorted_vs_Filtered_Raw_Data}{{7}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces The Savitzky-Golay filtered IV curve shows some minor fluctuations. The filtered dataset is binned into equispaced voltage bins to smoothen these fluctuations and to obtain an equispaced voltage axis. Binning of the unfiltered data leads to artificial steps in the IV response. \relax }}{7}}
+\newlabel{fig:Filtered_Binning_Impact_Raw_Data}{{8}{7}}
+\newlabel{fig:ResistanceLinearRegression}{{9}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Simulated IV Response}{8}}
+\citation{Rashid2016}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces The maximum slope at the transition is used to determine the gap voltage. The Savgol-Golay filtered dataset and the unfiltered dataset show strong fluctuations. Binning of the Savgol-Golay filtered dataset leads to a smooth IV response and minimum fluctuations in its slope.\relax }}{9}}
+\newlabel{fig:Filtered_Binning_Impact_Slope_Transission}{{10}{9}}
+\newlabel{fig:Chalmers}{{11}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces The model of a perfect IV reponse has no subgap current and a step function at the gap voltage followed by a normal resistance slope.\relax }}{10}}
+\newlabel{fig:Perfect}{{12}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces The model of a perfect IV curve can be expanded by including a finite constant subgap current.\relax }}{11}}
+\newlabel{fig:SubgapLeakageOffset}{{13}{11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces The subgap region of a perfect IV curve can be modelled with a subgap resistance and a step function at the origin.\relax }}{11}}
+\newlabel{fig:SubgapLeakage_SubgapLeakageOffset}{{14}{11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces The perfect IV curve model with subgap current simulation can be expanded by a excess current at the transition, to improve the fit at bias voltages close to the transition after the convolution with a gaussian. \relax }}{12}}
+\newlabel{fig:ExcessCriticalCurrent_SubgapLeakage_and_SubgapLeakageOffset}{{15}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Mixer}{12}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}AC Characteristic of the SIS Junction Branch}{12}}
+\newlabel{fig:Simulation_Stepwise}{{16}{13}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Embedding Admittance Recovery}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces The pumping level is evaluated from the unpumped and pumped IV response at every single bias voltage. The pumping level from negative bias voltages is close to the pumping level of the corresponding positive bias voltages.\relax }}{14}}
+\newlabel{fig:Pumping_Level}{{17}{14}}
+\@writefile{lof}{\contentsline {figure}{\numberline {18}{\ignorespaces The real and imaginary AC current are calculated from the pumping level at every bias voltage. Both negative and positive bias voltages are displayed.\relax }}{14}}
+\newlabel{fig:iACSIS}{{18}{14}}
+\newlabel{fig:ySIS}{{19}{15}}
+\newlabel{fig:Masked_Photon_Steps}{{20}{15}}
+\citation{Skalare1989}
+\citation{Skalare1989}
+\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces The slope of the transition is fitted with a gaussian. The width of the gaussian is used for one of the masking methods.\relax }}{16}}
+\newlabel{fig:Gaussian_Fit_on_Positive_Slope}{{21}{16}}
+\newlabel{eq:ILO_Skalare}{{11}{16}}
+\citation{Withington1995}
+\newlabel{eq:cost_Skalare}{{12}{17}}
+\newlabel{eq:cost_own}{{13}{17}}
+\newlabel{eq:cost_Withington}{{14}{17}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Evaluation of the Embedding Impedance Result}{17}}
+\newlabel{eq:cost_vLO_from_circuit}{{16}{17}}
+\citation{Withington1995}
+\@writefile{lof}{\contentsline {figure}{\numberline {22}{\ignorespaces The result of the embedding admittance can be used to reconstruct the pumped IV curve following this flowchart.\relax }}{18}}
+\newlabel{fig:Result_Evaluation_Flowchart}{{22}{18}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{18}}
+\@writefile{lof}{\contentsline {figure}{\numberline {23}{\ignorespaces The pumped IV curve computed from the embedding impedance shows good agreement with the measured pumped IV curve over the voltage range of the first photon step.\relax }}{19}}
+\newlabel{fig:Pumped_Recovered}{{23}{19}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces The results of the unpumped IV curve are similar to the QMix results.\relax }}{19}}
+\newlabel{tab:IV}{{1}{19}}
+\@writefile{lof}{\contentsline {figure}{\numberline {24}{\ignorespaces The pumped IV curves computed from the QMix result and the here presented fitting methods agree well with the measured pumped IV response at the first photon step. TODO update figurre\relax }}{20}}
+\newlabel{fig:Comparison_with_Johns_Embedding_Impedance}{{24}{20}}
+\@writefile{lof}{\contentsline {figure}{\numberline {25}{\ignorespaces The pumped IV curves computed from the masked photon step at negative and positive and positive only voltages show good agreement. TODO update figurre\relax }}{21}}
+\newlabel{fig:Comparison_Masking_Strategy_Embedding_Impedance}{{25}{21}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The results of the different evaluation methods are listed for both masking strategies, where on the top positive and negative bias voltages are used and at the bottom results only positive bias voltages are evaluated.\relax }}{21}}
+\newlabel{tab:Yemb}{{2}{21}}
+\bibstyle{abbrvnat}
+\bibdata{bibfile}
+\bibcite{Rashid2016}{{1}{2016}{{Rashid et~al.}}{{Rashid, Desmaris, Pavolotsky, and Belitsky}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {26}{\ignorespaces The pumped IV curves computed with the cost function methods and the eyeball method show similar results and good agreement with the measured IV curve.\relax }}{22}}
+\newlabel{fig:Pumped_Recovered_Compaison}{{26}{22}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{22}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{22}}
+\@writefile{lof}{\contentsline {figure}{\numberline {27}{\ignorespaces TODO, maybe include also a fixed fit\relax }}{23}}
+\newlabel{fig:Masked_Voltage_Region_two_Photon_Steps}{{27}{23}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces The results for the embedding admittance by using data from the first and second photon step.\relax }}{23}}
+\newlabel{tab:yEmb2Steps}{{3}{23}}
+\bibcite{Skalare1989}{{2}{1989}{{Skalare}}{{}}}
+\bibcite{Tucker1985}{{3}{1985}{{Tucker and Feldman}}{{}}}
+\bibcite{Withington1995}{{4}{1995}{{Withington et~al.}}{{Withington, Isaak, Kovtonyuk, Panhuyzen, and Klapwijk}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {28}{\ignorespaces TODO, maybe include also a fixed fit\relax }}{24}}
+\newlabel{fig:Pumped_Recovered_Comparison_Two_Photon_Steps}{{28}{24}}

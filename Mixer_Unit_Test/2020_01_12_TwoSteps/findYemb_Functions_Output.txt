@@ -1,0 +1,19 @@
+
+
+
+Masked Positive and Negative
+findYemb: array([7.01624745e-02, 5.85931643e-02, 1.53879422e+02])
+findYemb_iLO: array([0.07016248, 0.05859317])
+findYemb_Skalare: array([7.01625060e-02, 5.85931581e-02, 1.53879448e+02])
+findYemb_Skalare_fixed_iLO: array([0.07016244, 0.05859317])
+M.yEmb_from_circuit(): array([ 0.17442133,  0.08567653, -0.01282501])
+findZemb: array([ 8.39672662, -7.01215392])
+
+
+Masked Positive Only
+findYemb: array([6.97408304e-02, 5.82711173e-02, 1.52990706e+02])
+findYemb_iLO: array([0.06974076, 0.05827113])
+findYemb_Skalare: array([6.97408647e-02, 5.82711145e-02, 1.52990736e+02])
+findYemb_Skalare_fixed_iLO: array([0.06974078, 0.05827113])
+M.yEmb_from_circuit(): array([7.14245671e-02, 5.79059674e-02, 1.54302207e+02])
+findZemb: array([ 8.44390906, -7.05521089])

@@ -1,0 +1,19 @@
+M.yEmb_from_circuit(): array([1.03758504e-01, 1.03781090e-01, 1.94030824e+02])
+
+
+Masked Positive and Negative
+findYemb: array([1.03346142e-01, 7.02570914e-02, 1.84693738e+02])
+findYemb_iLO: array([0.10334597, 0.07025705])
+findYemb_Skalare: array([1.03346149e-01, 7.02571298e-02, 1.84693751e+02])
+findYemb_Skalare_fixed_iLO: array([0.10334617, 0.07025707])
+findYemb_Eyeball: array([-5.62241733e-01,  1.87298710e+00, -4.08825179e-04,  1.63802460e-03])
+findZemb: array([ 6.61775635, -4.49890133])
+
+
+Masked Positive Only
+findYemb: array([9.50221686e-02, 6.74619754e-02, 1.76460607e+02])
+findYemb_iLO: array([0.09502219, 0.06746198])
+findYemb_Skalare: array([9.50223195e-02, 6.74620341e-02, 1.76460746e+02])
+findYemb_Skalare_fixed_iLO: array([0.09502215, 0.06746197])
+findYemb_Eyeball: array([-5.90090181e-01,  1.99498908e+00, -4.32170176e-04,  1.74097703e-03])
+findZemb: array([ 6.9970431 , -4.96762203])

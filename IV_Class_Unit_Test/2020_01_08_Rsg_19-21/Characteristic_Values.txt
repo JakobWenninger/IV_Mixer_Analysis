@@ -1,0 +1,6 @@
+Gap Voltage 			 2.71 mV 
+Normal Resistance 		 13.68 Ohm 
+Subgap Resistance 		 368.2 Ohm 
+Voltage Offset 			 0.10 mV 
+Current Offset 		 9.62 uA 
+Critical Current 		 198.4 uA 

@@ -1,0 +1,117 @@
+@phdthesis{Garrett2018,
+annote = {refereneces
+86 broken photon steps: have a look into it
+qeqff},
+author = {Garrett, John},
+file = {:Users/wenninger/OneDrive - Nexus365/Literature/SIS{\_}Mixers/GarrettJ{\_}DPhilThesis.pdf:pdf},
+keywords = {(Umi)Aai13873727,Http://Ora.Ox.Ac.Uk/Objects/Uuid:D47fbf3b-1cf3-4e5,Social Sciences},
+language = {eng},
+publisher = {ProQuest Dissertations Publishing},
+school = {University of Oxford},
+title = {{A 230 ghz focal plane array using a wide if bandwidth sis receiver}},
+year = {2018}
+}
+@article{Withington1995,
+abstract = {Superconducting tunnel-junction direct detectors are considered in some detail. For frequencies below twice that of the gap there is some bias voltage for which the input impedance is real, the responsivity quantum limited, and the dynamic range high. A susperconducting detector saturates for two reasons: intrinsic saturation due to the relative increase in two-photon tunnelling processes, and extrinsic saturation due to the input match changing with bias voltage. The responsivity of a detector with a resistive RF source is least sensitive to bias-voltage changes and has the greatest dynamic range when operating with a sloping load line. In the case of an inductive source, the dynamic range can be higher than the intrinsic saturation rate would suggest. Ideally, superconducting tunnel-junction detectors should be biased in a constant-voltage mode. If the responsivity is to be depressed by no more than a few percent, the photon step should have a height which is no more than one quarter of the total current turn-on at the gap. Superconducting direct detectors can be used to make precise and well-calibrated optical measurements at submillimetre wavelengths. {\textcopyright} 1995.},
+annote = {Detector saturation due to:
+- intrinsic saturation due to increase in two-photon tunnelling processes
+- extrinsic saturation due to the input match changing with bias voltage
+
+Best bias mode uses constant voltage
+Another possibility would be the use of a current transformer inseries with the device (simpler than constant voltage approach)
+
+Two photons can cause a single electron to tunnel
+
+Impedance Recovery is explained following Skalare
+small region around the gap in which it is not possible to determine alpha!
+At photon steps and at the gap the data can not be token, since these values are prone of influence due to (possible) heating
+
+Ref
+3 Photon counting approach
+4 Photon counting approach
+9 harmonic-balance circuit-analysis technique
+13 Impedance recovery
+14 Impedance Recovery},
+author = {Withington, S. and Isaak, K. G. and Kovtonyuk, S. A. and Panhuyzen, R. A. and Klapwijk, T. M.},
+doi = {10.1016/1350-4495(95)00058-5},
+file = {:C$\backslash$:/Users/Jakob/OneDrive - Nexus365/Literature/SIS{\_}Mixers/Direct detection at submillimetre wavelengths using superconducting tunnel junctions.pdf:pdf},
+issn = {13504495},
+journal = {Infrared Physics and Technology},
+keywords = {Bias,Detector Saturation,Embedding Circuit,Impedance Match,Impedance Recovery,Linearity},
+mendeley-tags = {Bias,Detector Saturation,Embedding Circuit,Impedance Match,Impedance Recovery,Linearity},
+pages = {17},
+title = {{Direct detection at submillimetre wavelengths using superconducting tunnel junctions}},
+year = {1995}
+}
+
+@article{alertenv}<>
+
+\end{alertenv}
+@article{Skalare1989,
+abstract = {This article contains a brief description of the so-called "Eye-Ball" method, a way to determine the microwave properties of quasiparticle mixer mounts from DC measurements. Also described is a more efficient algorithm, the novel "RF voltage match" method, which provides increased computational speed by a factor of 2500. Both methods have been tried out on data obtained from measurements on real SIS mixers, and results are presented for 3 different mounts operating at 46, 90 and 345 GHz. {\textcopyright} 1989 Plenum Publishing Corporation.},
+annote = {The methods are described somewhere else
+
+THEORY DEPENDENCIES
+Relation of Voltage and Current at pumped frequency (non-linear, large signal admittance)
+Relation of pumped DC IV curve to pump frequency voltage
+-{\textgreater} all is Tucker
+Assumption made: Higher harmonics are shorted out
+
+EYE BALL METHOD
+Guess of I{\_}LO and Y{\_}LO
+Solving I{\_}LO - I{\_}f(V{\_}0,V{\_}LO) = V{\_}LO Y{\_}LO
+Search for best fit to actual pumped IV curve
+Disadvantages: each individual guess of the embedding admittance need to be evaluated at several DC bias points (including the massive Tucker equations)
+
+RF VOLTAGE MATCH METHOD
+This is what to go for
+- Compute pumping level alpha for each bias voltage V{\_}0 (alpha is a array) from pumped and unpumped DC IV curve
+- Compute I{\_}omega (equation 2) from unpumped IV curve an alpha
+- Using alpha (or VLO) to compute SIS admittance Y{\_}SIS at every bias point 
+
+={\textgreater} SIS junction fully described
+Unknowns I{\_}LO and Y{\_}LO
+
+Computation of virtual V'{\_}LO from:
+V'{\_}LO = I'LO/(Y'{\_}LO+Y{\_}SIS)
+
+Comparison of real V{\_}LO and virtual V'{\_}LO gives the result 
+
+Two parameters but I{\_}LO and Y{\_}LO are dependent on each other 
+
+
+CALCULATIONS WITH KNOWLEDGE OF THE INCIDENT POWER
+
+Ref
+6,7,8 Eye Ball Method
+9 Voltage Method (same paper as this one)},
+author = {Skalare, Anders},
+doi = {10.1007/BF01010125},
+file = {:Users/wenninger/OneDrive - Nexus365/Literature/SIS{\_}Mixers/Determining embedding circuit parameters from DC measurements on quasiparticle mixers.pdf:pdf},
+issn = {01959271},
+journal = {International Journal of Infrared and Millimeter Waves},
+keywords = {Impedance Recovery,SIS,embedding,mixer,quasiparticle},
+mendeley-tags = {Impedance Recovery},
+title = {{Determining embedding circuit parameters from DC measurements on quasiparticle mixers}},
+year = {1989}
+}
+@article{Rashid2016,
+abstract = {In this paper, we show theoretically and experimentally that the reactive quasiparticle tunnel current of the superconductor tunnel junction could be directly measured at specific bias voltages for the higher harmonics of the quasiparticle tunnel current. We used the theory of quasiparticle tunneling to study the higher harmonics of the quasiparticle tunnel current in superconducting tunnel junction in the presence of rf irradiation. The impact of the reactive current on the harmonic behavior of the quasiparticle tunnel current was carefully studied by implementing a practical model with four parameters to model the dc I-V characteristics of the superconducting tunnel junction. The measured reactive current at the specific bias voltage is in good agreement with our theoretically calculated reactive current through the Kramers-Kronig transform. This study also shows that there is an excellent correspondence between the behavior of the predicted higher harmonics using the previously established theory of quasiparticle tunnel current in superconducting tunnel junctions by J.R. Tucker and M.J. Feldman and the measurements presented in this paper.},
+author = {Rashid, H. and Desmaris, V. and Pavolotsky, A. and Belitsky, V.},
+doi = {10.1063/1.4947133},
+file = {:Users/wenninger/OneDrive - Nexus365/Literature/SIS{\_}Mixers/Rashid - 2016 - Harmonic and reactive behavior of the quasiparticle tunnel current in SIS junctions.pdf:pdf},
+issn = {21583226},
+journal = {AIP Advances},
+title = {{Harmonic and reactive behavior of the quasiparticle tunnel current in SIS junctions}},
+year = {2016}
+}
+@article{Tucker1985,
+abstract = {Photon-assisted tunneling of electrons through an insulating barrier may be used to detect long-wavelength radiation with a sensitivity approaching the limit imposed by the Heisenberg uncertainty principle. A new generation of ultra-low-noise millimeter-wave receivers, currently being developed for astronomical observation, utilizes the extremely sharp nonlinearity produced by single-electron quasiparticle tunneling between two superconductors in a superconductor-insulator-superconductor (SIS) tunnel junction. At millimeter wavelengths, the quantum energy e may be larger than the voltage width for onset of quasiparticle tunneling in a SIS junction; and under these conditions the absorption of a single photon can cause one additional electron to tunnel through the barrier. Several newly discovered quantum effects become possible in this regime, including power amplification of an incoming signal during the process of frequency down-conversion in a heterodyne receiver. The experimental development of SIS millimeter-wave receivers is reviewed, along with the quantum theory of mixing which predicts their performance. {\textcopyright} 1985 The American Physical Society.},
+author = {Tucker, John R. and Feldman, Marc J.},
+doi = {10.1103/RevModPhys.57.1055},
+file = {:C$\backslash$:/Users/Jakob/AppData/Local/Mendeley Ltd./Mendeley Desktop/Downloaded/Tucker, Feldman - 1985 - Quantum detection at millimeter wavelengths.pdf:pdf},
+issn = {00346861},
+journal = {Reviews of Modern Physics},
+title = {{Quantum detection at millimeter wavelengths}},
+year = {1985}
+}

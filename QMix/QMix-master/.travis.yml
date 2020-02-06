@@ -1,0 +1,21 @@
+# Parameters for Travis CI tests
+# These are automated tests that run after each commit
+# see: https://docs.travis-ci.com/user/languages/python/
+language: python
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7-dev"  # 3.7 development branch
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install .
+  - pip install pytest>=3.0
+  - pip install pytest-cov==2.5.0
+  - pip install python-coveralls
+# command to run tests
+script: 
+  - py.test ./tests/ --verbose --doctest-modules --color=yes --cov=./qmix/ --cov-report=term-missing
+# for coveralls.io
+after_success:
+  - coveralls
