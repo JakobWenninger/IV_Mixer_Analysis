@@ -169,10 +169,14 @@ class IV_Response():
         
         self.unsortedSlope = self.slope_calc(self.rawIVData)
         self.sortedSlope = self.slope_calc(self.sortedIVData) # for comparison of the slope from unsorted data
-        if self.fixedOffset == None:
-            self.offset = self.offset_from_raw_data()
-        else:
-            self.offset = self.fixedOffset
+        
+        self.offset = self.offset_determination()
+        #TODO remove, also from kwargs
+#        if self.fixedOffset == None:
+#            self.offset = self.offset_from_raw_data()
+#        else:
+#            self.offset = self.fixedOffset
+        
         #kind of redundant to express these values separately TODO?
         self.voltageOffset = self.offset[0] 
         self.currentOffset = self.offset[1]
@@ -194,7 +198,7 @@ class IV_Response():
         self.binSlope = self.slope_calc(self.binedIVData)
         self.unfilteredBinSlope = self.slope_calc(self.unfilteredBinedIVData)
                 
-        self.rN_LinReg = self.rN_LinReg_calc()    
+        self.rN_LinReg = self.rN_LinReg_calc(self.offsetCorrectedSortedIVData[0],self.offsetCorrectedSortedIVData[1])    
         self.rSG_LinReg = self.rSG_LinReg_calc()    
         
         self.rN = self.rN_calc()
@@ -236,13 +240,34 @@ class IV_Response():
         '''
         txt = ''
         txt += 'Gap Voltage \t\t\t %.2f mV \n'%self.gapVoltage
-        txt += 'Normal Resistance \t\t %.2f Ohm \n'%self.rN
-        txt += 'Subgap Resistance \t\t %.1f Ohm \n'%self.rSG
-        txt += 'Voltage Offset \t\t\t %.2f mV \n'%self.offset[0]
-        txt += 'Current Offset \t\t\t %.2f uA \n'%self.offset[1]
         txt += 'Critical Current \t\t %.1f uA \n'%self.criticalCurrent
+        txt += 'Normal Resistance \t %.2f Ohm \n'%self.rN
+        txt += 'Subgap Resistance \t %.1f Ohm \n'%self.rSG
+        txt += 'Voltage Offset \t\t\t %.2f mV \n'%self.offset[0]
+        txt += 'Current Offset \t\t\t %.2f uA '%self.offset[1]
         print(txt)
         return txt
+    
+    def plot_IV_with_Info(self,positionInfoBox=[-9.3,40,-9.3,20],linespacing =1.2, fontsize=8):
+        '''This function plots the IV curve with the characteristic values in a box.
+        
+        inputs
+        ------
+        positionInfoBox: array
+            Position o the info box. For more detail look up the plt.annotate documentation.
+        linespacing: float
+            The spacing between lines in the textbox.
+        fontsize: integer
+            The fontsize in the textbox
+        '''
+        plot(self.binedIVData)
+        plt.annotate(self.information().expandtabs(),(positionInfoBox[0],positionInfoBox[1]),xytext=(positionInfoBox[2], positionInfoBox[3]),
+                     linespacing=linespacing, size=fontsize, bbox=dict(boxstyle="round", fc="w") )
+
+    def plot_slope_raw_unsorted(self):
+        '''This function plots the slope of the raw unsorted data.
+        '''
+        plot(self.unsortedSlope)
         
     def savgol_filter(self):
         '''This function applies a Savitzky-Golay filter to remove noise from the data.
@@ -311,12 +336,79 @@ class IV_Response():
             [0] The average x data of the slope at (x1+x0)/2 .
             [1] The normalised slope (y1-y0)/(x1-x0).
         '''
-        return np.array([np.divide(np.add(ivData[0,1:],ivData[0,:-1]),2),
-                         np.divide(np.subtract(ivData[1,1:],ivData[1,:-1]),np.subtract(ivData[0,1:],ivData[0,:-1]))])
+        with np.errstate(divide='ignore', invalid='ignore'):# This is necessary for evaluation of the raw data
+            return np.array([np.divide(np.add(ivData[0,1:],ivData[0,:-1]),2),
+                             np.divide(np.subtract(ivData[1,1:],ivData[1,:-1]),np.subtract(ivData[0,1:],ivData[0,:-1]))])
     
+    def offset_determination(self):
+        '''This function is a wrapper for the implemented offset correction methods.
+        The function requires user input and allows user friendly offset correction.
+
+        returns
+        -------
+        1d array
+            [0] The voltage offset.
+            [1] The current offset.
+        '''
+        def addLegend():
+            '''This function adds the legend to the plot.
+            '''
+            legend = plt.legend(loc='best', shadow=False,ncol=1)
+            leg = plt.gca().get_legend()
+            ltext  = leg.get_texts()  # all the text.Text instance in the legend
+            llines = leg.get_lines()  # all the lines.Line2D instance in the legend
+            plt.setp(ltext, fontsize='small')
+            plt.setp(llines, linewidth=1.5)   # the legend line width
+            #plt.rcParams.update({'legend.handlelength': .5})# the legend line length
+            plt.tight_layout()
+        origin = self.offset_from_raw_data()
+        transition = self.offset_from_maxSlopeVgapAndCriticalCurrent()
+        transitionVoltageRnCurrent = [transition[0],
+                                      self.currentOffsetByNormalResistance_calc(self.sortedIVData[0],self.sortedIVData[1],transition[0])]
+        originVoltageTransitionCurrent = [origin[0],transition[1]]
+        plt.figure()
+        plot(self.rawIVData,label = 'raw')
+        plt.plot(self.rawIVData[0]-origin[0],self.rawIVData[1]-origin[1],label='a')
+        plt.plot(self.rawIVData[0]-transition[0],self.rawIVData[1]-transition[1], label='b')
+        plt.plot(self.rawIVData[0]-transitionVoltageRnCurrent[0],self.rawIVData[1]-transitionVoltageRnCurrent[1], label='c')
+        plt.plot(self.rawIVData[0]-originVoltageTransitionCurrent[0],self.rawIVData[1]-originVoltageTransitionCurrent[1], label='d')
+        addLegend()
+        closeWindowString = 'Close the window with the plot to enter your joice.'
+        print('Which option is the best? \n a = %r,\n b = %r,\n c = %r,\n d = %r\n or voltage offset as float.\n%s'%(origin,transition,transitionVoltageRnCurrent,originVoltageTransitionCurrent,closeWindowString))
+        plt.show()
+        userInput = input('What is your joice?\n')
+        if userInput == 'a': return origin
+        elif userInput == 'b': return transition
+        elif userInput == 'c': return transitionVoltageRnCurrent
+        elif userInput == 'd': return originVoltageTransitionCurrent
+        else:
+            w = True
+            while w:
+                try:
+                    userInput = float(userInput)
+                    w = False
+                except:
+                    userInput = input('Please enter a valid float.\n')
+            currentOffsetSuggestion = self.currentOffsetByNormalResistance_calc(self.sortedIVData[0],self.sortedIVData[1],userInput)
+            plot(self.rawIVData,label = 'raw')
+            plt.plot(self.rawIVData[0]-userInput,self.rawIVData[1]-currentOffsetSuggestion,label='Suggestion')
+            addLegend()
+            print('The suggested offset is %f.\n%s'%(currentOffsetSuggestion,closeWindowString))
+            plt.show()
+            w = True
+            while w:
+                try:
+                    currentOffset = input('Please enter the current offset as float.\n')
+                    currentOffset = float(currentOffset)
+                    w = False
+                except:
+                    print('Please enter a valid float.')
+            plt.close()
+            return([userInput,currentOffset])
+            
     def offset_from_raw_data(self):
         '''This function determines the current and voltage offset from the slope of the unsorted raw data.
-        Using the raw data unsorted avoids a washing of the maximum slope at 0 V.
+        Using the raw data unsorted avoids a washing of the maximum slope at 0 V. # TODO update
         
         returns
         -------
@@ -331,11 +423,94 @@ class IV_Response():
         #res = fmin(self.costGaus,[data[0,indexMinToMax[-1]],data[1,indexMinToMax[-1]],.02],(data,))
         #voltageOffset = res[0] #2020/01/20 #np.average(data[0,indexMinToMax[-2:]])
         voltageOffset = np.average(data[0,indexMinToMax[-2:]])
+        #offset correction from normal resistance
+        currentOffset = self.currentOffsetByNormalResistance_calc(self.sortedIVData[0],self.sortedIVData[1],voltageOffset)
 
-        indexMinToMaxVoltageDifference = np.abs(self.rawIVData[0] - voltageOffset).argsort()
-        currentOffset = np.average(self.rawIVData[1,indexMinToMaxVoltageDifference[:2]])
+        #offset correction from current at the transition. This works relatively bad in case of Cooper pair tunnelling is present
+        #indexMinToMaxVoltageDifference = np.abs(self.rawIVData[0] - voltageOffset).argsort()
+        #currentOffset = np.average(self.rawIVData[1,indexMinToMaxVoltageDifference[:2]])
+        return [voltageOffset,currentOffset]
+    
+    def currentOffsetByNormalResistance_calc(self,xdata,ydata,voltageOffset):
+        '''The current offset obtained from the normal resistance fit, which is obtained from voltage offset corrected data.
+
+        inputs
+        ------
+        xdat: 1d array
+            The x axis data for the linear regression.
+        ydat:1d array
+            The y axis data for the linear regression.
+        voltageOffset: float
+            The voltage offset.        
+        returns
+        -------
+        float
+            The current offset.
+        '''
+        rN_LinReg = self.rN_LinReg_calc(xdata-voltageOffset,ydata)    
+        return (rN_LinReg[0][1]+rN_LinReg[1][1])*1e3/2.
+    
+    def offset_from_maxSlopeVgapAndCriticalCurrent(self):
+        '''This function calculates the offset from the gap voltage and the current after the gap.
+        The data is binned for this calculations.
+        '''
+        binedIVData = self.binedIVData_calc(self.sortedIVData)
+        binSlope = self.slope_calc(binedIVData)
+        maxSlopeVgapAndCriticalCurrent = self.maxSlopeVgapAndCriticalCurrent_calc(binedIVData,binSlope,compute_Error = False)
+        voltageOffset = self.voltageOffset_calc(maxSlopeVgapAndCriticalCurrent)
+        currentOffset = self.currentOffsetByCrtiticalCurrent_calc(maxSlopeVgapAndCriticalCurrent)
         return [voltageOffset,currentOffset]
         
+    def voltageOffset_calc(self,maxSlopeVgapAndCriticalCurrent):
+        '''The voltage offset obtained from the gap voltages at negative and positive bias voltage.
+        
+        inputs
+        ------
+        maxSlopeVgapAndCriticalCurrent: 2d array
+            [[negativeVoltageWithMaximumSlope,positiveVoltageWithMaximumSlope],[negativeCriticalCurrent,positiveCriticalCurrent]]
+        
+        returns
+        -------
+        float:
+            The voltage offset.
+        '''
+        return np.average(maxSlopeVgapAndCriticalCurrent[0])
+    
+    def currentOffsetByCrtiticalCurrent_calc(self,maxSlopeVgapAndCriticalCurrent):
+        '''The current offset obtained from the critical current at negative and positive bias voltage.
+        
+        inputs
+        ------
+        maxSlopeVgapAndCriticalCurrent: 2d array
+            [[negativeVoltageWithMaximumSlope,positiveVoltageWithMaximumSlope],[negativeCriticalCurrent,positiveCriticalCurrent]]
+        
+        returns
+        -------
+        float:
+            The voltage offset.
+        '''
+        return np.average((maxSlopeVgapAndCriticalCurrent[1]))
+   
+    def offset_Correction(self,ivData):
+        '''This function corrects any IV dataset for the voltage and current offset.
+        
+        inputs
+        ------
+        ivData: 2d array
+            The dataset from which the slope is calculated.
+            [0] The x data.
+            [1] The y data.
+        
+        returns
+        -------
+        2d array
+            The input IV data corrected for the voltage and current offset.
+        '''
+        ivData = ivData.copy()
+        ivData[0] = ivData[0]-self.offset[0]
+        ivData[1] = ivData[1]-self.offset[1]
+        return ivData
+    
     def maxSlopeVgapAndCriticalCurrent_calc(self,iVData,iVSlope,compute_Error = True):
         '''This function computese the maximum slope of the IV curve for positive and negative voltages. The function can be used to determine gap voltage, as the maximum slope is taken as V_gap.
            The second part of this function is to return the critical current. It is the second negative slope after the gap voltage/maximum slope.
@@ -347,6 +522,8 @@ class IV_Response():
         iVSlope: 2d array
             The difference between the datapoints.
             Note that the array is of len(iVData)-1
+        compute_Error: bool
+            Determines if the error is calculated or not.
         
         returns
         -------
@@ -374,12 +551,6 @@ class IV_Response():
         return np.average(np.abs(maxSlopeVgapAndCriticalCurrent[0]))
 
 
-    def voltageOffset_calc(self):
-        '''The voltage offset obtained from the gap voltages at negative and positive bias voltage.'''
-        #return np.average(self.maxSlopeVgapAndCriticalCurrent[0])
-        slope_masked=self.binSlope[:,np.abs(self.binSlope[0])<self.offsetThreshold] 
-        return self.binedIVData[0,np.abs(self.binedIVData[0]-slope_masked[0,slope_masked[1].argmax()]).argmin()]
-    
     def criticalCurrent_from_max_slope_calc(self):
         '''The critical current obtained from the maximum slope of the binned IV curve'''
         return np.average(np.abs(self.maxSlopeVgapAndCriticalCurrent[1])) #TODO this requires a pi/4
@@ -387,45 +558,7 @@ class IV_Response():
     def criticalCurrent_from_gapVoltage_rN_calc(self):
         '''The critical current obtained from the gap voltage and the normal resistance'''
         return self.gapVoltage*1e3/self.rN
-    
-    def currentOffsetByCrtiticalCurrent_calc(self):
-    #def currentOffset(self):
-        '''The current offset obtained from the critical current at negative and positive bias voltage.'''
-        return np.average((self.maxSlopeVgapAndCriticalCurrent[1]))
-    
-    #def currentOffsetByNormalResistance(self):
-#        '''This function computes the current offset from the normal resistance.
-#           The function is not used at the moment, since the data is already corrected for the current offset at a stage where only the raw data is read in.
-#         '''
-#        slope_masked=self.binSlope[:,np.abs(self.binSlope[0])<self.offsetThreshold] 
-#        return self.binedIVData[1,np.abs(self.binedIVData[0]-slope_masked[0,slope_masked[1].argmax()]).argmin()]
-    
-    def currentOffsetByNormalResistance_calc(self):
-        '''The current offset obtained from the normal resistance fit, which is obtained from voltage offset corrected data.
-        Note that this function is unused at the moment, since the offset is determined from the raw data.
-        '''
-        return (self.rN_LinReg[0][1]+self.rN_LinReg[1][1])*1e3/2.
-   
-    def offset_Correction(self,ivData):
-        '''This function corrects any IV dataset for the voltage and current offset.
-        
-        inputs
-        ------
-        ivData: 2d array
-            The dataset from which the slope is calculated.
-            [0] The x data.
-            [1] The y data.
-        
-        returns
-        -------
-        2d array
-            The input IV data corrected for the voltage and current offset.
-        '''
-        ivData = ivData.copy()
-        ivData[0] = ivData[0]-self.offset[0]
-        ivData[1] = ivData[1]-self.offset[1]
-        return ivData
-  
+
     def differenceGaussianData(self,params, xy,rangeToEvaluate,vGap):
             '''This function is the cost function to fit a gaussian to the given data.
             
@@ -542,18 +675,20 @@ class IV_Response():
         plot(g1,label='Fit on Negative Transission')
         
         
-    def rN_LinReg_calc(self):
+    def rN_LinReg_calc(self,xdat,ydat):
         '''Linear regression to obtain the value of the normal resistance.
         The voltage offset corrected data is token to achieve solid determination of the normal resistance in the defined range.
         
-        -------
+        inputs
+        ------
+        xdat: 1d array
+            The x axis data for the linear regression.
+        ydat:1d array
+            The y axis data for the linear regression.
         returns
         -------
         [resultOfNegativeRegression,resultOfPositiveRegression]
-        '''
-        #correct x data for voltage offset
-        xdat = self.offsetCorrectedSortedIVData[0]
-        ydat = self.offsetCorrectedSortedIVData[1]
+        '''       
         # ~ is "not"
         reslinregRnpos = stats.linregress(
             xdat[np.where(np.logical_and(xdat<self.rNThresholds[1],np.logical_and(xdat>self.rNThresholds[0] , ~np.isnan(ydat))))],
