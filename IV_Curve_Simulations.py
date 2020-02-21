@@ -5,16 +5,26 @@ Created on Mon Nov 11 15:13:21 2019
 
 @author: wenninger
 """
-import numpy as np
 from Gaussian import gaussian
-from plotxy import plot
 import matplotlib.pylab as plt
+import numpy as np
 from scipy import integrate
 import scipy.constants as const
 from scipy.signal import convolve
 from scipy.special import expit
+import sys
+
+sys.path.insert(0, '../Helper')
+sys.path.insert(0, '../Superconductivity')
+
+
 from ExpandingFunction import expandFuncFor
 from Fundamental_BCS_Equations import nS_over_nN0, cooperPair_Binding_Energy_over_T,cooperPair_Binding_Energy_0K
+from plotxy import plot
+
+##################################################################
+##### IV Curves with Step Functions and Gaussian Convolution #####
+##################################################################
 
 #TODO write comments
 def iV_Curve_Gaussian_Convolution_with_Excess_Critical_Current(vrange= np.arange(-5,5,1e-3),vGap = 2.9,excessCriticalCurrent=0,criticalCurrent=190,sigmaGaussian = 0.05,rN=15,subgapLeakage=0):
@@ -64,7 +74,7 @@ def iV_Curve_Gaussian_Convolution_with_Excess_Critical_Current(vrange= np.arange
     ret = ret[:,np.where(np.logical_and(ret[0]<ret[0,-1]-6*sigmaGaussian,
                                         ret[0]>ret[0,0]+6*sigmaGaussian))[0]]
     return ret
-
+    
 def iV_Curve_Perfect_with_Excess_Critical_Current(vrange= np.arange(-5,5,1e-3),vGap = 2.9,excessCriticalCurrent=0,criticalCurrent=190,sigmaGaussian = 0.05,rN=15,subgapLeakage=0):
     '''This function computes a IV curve with a step function at the transission.
     
@@ -261,10 +271,14 @@ def iV_Curve_Gaussian_Convolution_Perfect(vrange= np.arange(-5,5,1e-3),vGap = 2.
                                         ret[0]>ret[0,0]+6*sigmaGaussian))[0]]
     return ret
 
+#####################################
+##### IV Curve after Nicol 1960 #####
+#####################################
+
 def _funcToInt(x,v0,te,teC):
     '''
     The function which needs to be integrated to compute the current through the SIS junction.
-    Tinkham equation 3.82
+    The equation originates from Tinkham equation 3.82, but is identical to equation 3 in Nicol 1960.
 
     inputs
     ------
@@ -280,8 +294,13 @@ def _funcToInt(x,v0,te,teC):
     returns 
     -------
     '''
-    return np.multiply(np.multiply(nS_over_nN0(x,te,teC),nS_over_nN0(np.add(x,np.multiply(-const.e,v0)),te,teC)),
-                       np.subtract(expit(-np.divide(np.add(x,np.multiply(-const.e,v0)),(const.k*te))),expit(-np.divide(x,(const.k*te)))))
+    return np.multiply(np.multiply(nS_over_nN0(x,te,teC),nS_over_nN0(np.subtract(x,np.multiply(const.e,v0)),te,teC)),
+                       np.subtract(expit(-np.divide(np.subtract(x,np.multiply(const.e,v0)),(const.k*te))),
+                                   expit(-np.divide(x,(const.k*te)))))
+    #Following signs would return the IV curve upside down
+#    return np.multiply(np.multiply(nS_over_nN0(x,te,teC),nS_over_nN0(np.subtract(x,np.multiply(const.e,v0)),te,teC)),
+#                       np.subtract(expit(np.divide(np.subtract(x,np.multiply(const.e,v0)),(const.k*te))),
+#                                   expit(np.divide(x,(const.k*te)))))
 
 def _singularities(vtest,te=4,teC=10):
     '''This function computes the singularities occuring in :func: funcToInt.
@@ -317,7 +336,7 @@ def _singularities(vtest,te=4,teC=10):
     pnts=np.abs(np.array([pnts,pnts-const.e*vtest,pnts+const.e*vtest]))
     return np.hstack([pnts,np.negative(pnts)])
 
-def iV_Curve_Nicols1960(vrange=np.arange(-.01,.01,0.0002),intboundry=const.e*10,te=4,teC=10,rN=15):
+def iV_Curve_Nicol1960(vrange=np.arange(-.01,.01,0.0002),intboundry=const.e*10,te=4,teC=10,rN=15):
     '''This function computes the IV curve following Nicols 1960.
     
     inputs
@@ -325,7 +344,8 @@ def iV_Curve_Nicols1960(vrange=np.arange(-.01,.01,0.0002),intboundry=const.e*10,
     vrange: 1D np.array
         Bias voltages applied to the junction which are computed
     intboundry: float 
-        The energy range (from -intboundry to +intboundry) which is integrated over. In the literature this is infinity, but a limited integration is sufficient anyway. 
+        The energy range (from -intboundry to +intboundry) which is integrated over. 
+        In the literature this is infinity, but a limited integration is sufficient anyway. 
     te: float or int
         The actual temperature of the junction
     teC: float or int
@@ -392,31 +412,40 @@ def _funcToInt_Test(energyRange=np.arange(-.01*const.e,.01*const.e,.00001*const.
         plt.show()
     return result
 
-def plot_IV_Curve_Nicols1960_different_Temperatures(vrange=np.arange(-.01,.01,0.0002),intboundry=const.e*10,te=[1,4,6,8],teC=10,rN=100):
+def plot_iV_Curve_Nicol1960_different_Temperatures(vrange=np.arange(-.01,.01,0.0002),intboundry=const.e*10,te=[1,4,6,8],teC=10,rN=100):
     '''This function plots the IV curves at different temperatures following Nicols 1960.
-    Used for testing :func: iV_Curve_Nicols1960.
+    Used for testing :func: iV_Curve_Nicol1960.
     
     inputs
     ------
     vrange: 1D np.array
-        Bias voltages applied to the junction which are computed
+        Bias voltages applied to the junction which are computed.
     intboundry: float 
-        The energy range (from -intboundry to +intboundry) which is integrated over. In the literature this is infinity, but a limited integration is sufficient anyway. 
-    te: float or int
-        The actual temperature of the junction
+        The energy range (from -intboundry to +intboundry) which is integrated over. 
+        In the literature this is infinity, but a limited integration is sufficient anyway. 
+    te: 1d array
+        The actual temperature of the junction.
     teC: float or int
-        The criticl temperture of the superconductor
+        The criticl temperture of the superconductor.
     rN: float or int
         The normal resistivity.
     '''
     for t in te:
-        plot(iV_Curve_Nicols1960(vrange,intboundry,t,teC,rN))
+        plot(iV_Curve_Nicol1960(vrange,intboundry,t,teC,rN))
     
-
+###########################
+##### Other IV Curves #####
+###########################
+        
 def iV_Chalmers(vrange= np.arange(-5,5,1e-3),a=30,vGap = 2.9,rN=15,rSG=300):
     '''This is the IV curve simulation following Rashid et al. 2016 in
-    Harmonic and reactive behavior of the quasiparticle tunnel current in SIS junctions
-    The curve is determined by a parameter a and the typical IV characteristic values
+    "Harmonic and reactive behavior of the quasiparticle tunnel current in SIS junctions".
+    The curve is determined by a parameter a and the typical IV characteristic values.
+    
+    returns
+    -------
+    2d array:
+        The bias voltage [0] and the corresponding current [1].
     '''
     current = np.add(np.add(np.multiply(np.divide(vrange,rSG),expit(np.multiply(a,np.add(vrange,vGap)))),
                          np.multiply(np.divide(vrange,rN),expit(np.multiply(-a,np.add(vrange,vGap))))),
@@ -424,8 +453,26 @@ def iV_Chalmers(vrange= np.arange(-5,5,1e-3),a=30,vGap = 2.9,rN=15,rSG=300):
                             np.multiply(np.divide(vrange,rN),expit(np.multiply(a,np.subtract(vrange,vGap))))))
     return np.vstack([vrange,current])
 
+def iV_Kennedy(vrange= np.arange(-2,2,1e-3),n=30):
+    '''This is the IV curve simulation called Kennedy curve. (Ghassan gave me the equation.)
+    The quantities are normalised to the gap voltage.
     
+    inputs
+    ------
+    vrange: 1D np.array
+        Bias voltages applied to the junction which are computed.
+    n: float
+        Factor going into the exponential.
+        Reasonable values range from 10 (lot of smearing of the transition) to 100 (little smearing at the transition).
     
+    returns
+    -------
+    2d array:
+        The bias voltage [0] and the corresponding current [1].
+    '''
+    current = np.divide(np.power(vrange,2*n+1),np.add(np.power(vrange,2*n),1))
+    return np.vstack([vrange,current])
+
     
     
     

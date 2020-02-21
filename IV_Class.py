@@ -1,14 +1,18 @@
-﻿import glob, os,sys
-import seaborn as sns
-import pandas as pd
-import numpy as np
-import matplotlib as mat 
+﻿import numpy as np
 import matplotlib.pylab as plt
+import pandas as pd
 from scipy.optimize import fmin,fmin_slsqp,minimize,differential_evolution
 from scipy.signal import hilbert,savgol_filter
 from scipy import stats
+import seaborn as sns
+import sys
+
+sys.path.insert(0, '../Helper')
+sys.path.insert(0, '../Superconductivity')
+
+
 from ExpandingFunction import expandFuncWhile
-from plotxy import plot
+from plotxy import plot # TODO import from Helper
 from Gaussian import gaussian
 from IV_Curve_Simulations import iV_Chalmers,iV_Curve_Gaussian_Convolution_with_SubgapResistance
 #from IV_Curve_Simulations import iV_Curve_Gaussian_Convolution
@@ -60,7 +64,8 @@ kwargs_IV_Response_rawData = {
                     'simulationVmin':-6,
                     'simulationVmax': 6,
                     'simulation_Sigma_Gaussian_Convolution_Guess':0.07,
-                    'skip_IV_simulation':False
+                    'skip_IV_analysis':False,
+                    'skip_IV_simulation':True
                     }
 kwargs_IV_Response_John = {
                     'filenamestr':None,
@@ -84,14 +89,15 @@ kwargs_IV_Response_John = {
                     'simulationVmin':-15,
                     'simulationVmax': 15,
                     'simulation_Sigma_Gaussian_Convolution_Guess':0.07,
-                    'skip_IV_simulation':False
+                    'skip_IV_analysis':False,
+                    'skip_IV_simulation':True
                     }
 
 class IV_Response():
     '''This class is used to contain the IV curve of a dataset and to compute the charteristic values
     '''
-    def __init__(self,filename,**kwargs):#,filenamestr=None,headerLines=0,footerLines=1,columnOffset=1,currentFactorToMicroampere=1,junctionArea=None, normalResistance300K=None,numberOfBins=2001,vmin=-10,vmax=10, vGapSearchRange=[2.5,3.2],rNThresholds = [4.5,10],rSGThresholds = [1.2,1.8]):
-        '''The initialising of the class
+    def __init__(self,filename,**kwargs):
+        '''The initialisation of the class.
         params
         ------
         filename: string or array
@@ -108,7 +114,7 @@ class IV_Response():
         currentFactorToMicroampere: float
             The factor to get the current in microampere
         junctionArea: float
-            Area of the junction
+            Area of the junction in um^2
         normalResistance300K: float
             The normal resistance of the junction at 300 K to compute the RRR value
         numberOfBins: int
@@ -138,6 +144,10 @@ class IV_Response():
             The maximum voltage of the simulated IV curve.    
         simulation_Sigma_Gaussian_Convolution_Guess: float
             The guess value for the standard deviation of the gaussian, which is used to convolve and compute simulated IV curves.
+        skip_IV_analysis: bool
+            Decides if the characteristic values are determined.
+            This might be useful in case the data set contains only a portion of the IV curve, like only the subgap region.
+            Note that no offset correction is performed as well except it is defined in the fixedOffset parameter.
         skip_IV_simulation: bool
             Decides if a simulated IV curve si set during the initialisation of the class.
         '''
@@ -170,12 +180,11 @@ class IV_Response():
         self.unsortedSlope = self.slope_calc(self.rawIVData)
         self.sortedSlope = self.slope_calc(self.sortedIVData) # for comparison of the slope from unsorted data
         
-        self.offset = self.offset_determination()
-        #TODO remove, also from kwargs
-#        if self.fixedOffset == None:
-#            self.offset = self.offset_from_raw_data()
-#        else:
-#            self.offset = self.fixedOffset
+        if self.fixedOffset == None and not self.skip_IV_analysis:
+            self.offset = self.offset_determination()
+        elif not self.fixedOffset == None:
+            self.offset = self.fixedOffset
+        else: self.offset = [0,0]
         
         #kind of redundant to express these values separately TODO?
         self.voltageOffset = self.offset[0] 
@@ -197,30 +206,33 @@ class IV_Response():
         
         self.binSlope = self.slope_calc(self.binedIVData)
         self.unfilteredBinSlope = self.slope_calc(self.unfilteredBinedIVData)
-                
-        self.rN_LinReg = self.rN_LinReg_calc(self.offsetCorrectedSortedIVData[0],self.offsetCorrectedSortedIVData[1])    
-        self.rSG_LinReg = self.rSG_LinReg_calc()    
+            
+        if not self.skip_IV_analysis:
+            self.rN_LinReg = self.rN_LinReg_calc(self.offsetCorrectedSortedIVData[0],self.offsetCorrectedSortedIVData[1])    
+            self.rSG_LinReg = self.rSG_LinReg_calc()    
+            
+            self.rN = self.rN_calc()
+            self.rNsigma = self.rNsigma_calc()
+            
+            self.rSG = self.rSG_calc()
+            self.rSGsigma = self.rSGsigma_calc()
+            
+            self.rSGrN = self.rSGrN_calc()
+            self.rSGrNsigma = self.rSGrN_calc()
+            
+            self.maxSlopeVgapAndCriticalCurrent = self.maxSlopeVgapAndCriticalCurrent_calc(self.binedIVData,self.binSlope,True)
+            self.gapVoltage = self.gapVoltage_calc(self.maxSlopeVgapAndCriticalCurrent)
+            self.criticalCurrent_from_max_slope = self.criticalCurrent_from_max_slope_calc() # is lower than of Vgap/Rn
+            self.criticalCurrent_from_gapVoltage_rN = self.criticalCurrent_from_gapVoltage_rN_calc()
+            self.criticalCurrent = self.criticalCurrent_from_gapVoltage_rN 
+            #Outdated, since data  is already offset corrected. The returned offset is wrong
+            #self.currentOffsetByCrtiticalCurrent = self.currentOffsetByCrtiticalCurrent_calc()
+            #self.currentOffsetByNormalResistance = self.currentOffsetByNormalResistance_calc()
+                    
+            self.gaussianBinSlopeFit = self.gaussianBinSlopeFit_calc()
         
-        self.rN = self.rN_calc()
-        self.rNsigma = self.rNsigma_calc()
-        
-        self.rSG = self.rSG_calc()
-        self.rSGsigma = self.rSGsigma_calc()
-        
-        self.rSGrN = self.rSGrN_calc()
-        self.rSGrNsigma = self.rSGrN_calc()
-        
-        self.maxSlopeVgapAndCriticalCurrent = self.maxSlopeVgapAndCriticalCurrent_calc(self.binedIVData,self.binSlope,True)
-        self.gapVoltage = self.gapVoltage_calc(self.maxSlopeVgapAndCriticalCurrent)
-        self.criticalCurrent_from_max_slope = self.criticalCurrent_from_max_slope_calc() # is lower than of Vgap/Rn
-        self.criticalCurrent_from_gapVoltage_rN = self.criticalCurrent_from_gapVoltage_rN_calc()
-        self.criticalCurrent = self.criticalCurrent_from_gapVoltage_rN 
-        #Outdated, since data  is already offset corrected. The returned offset is wrong
-        #self.currentOffsetByCrtiticalCurrent = self.currentOffsetByCrtiticalCurrent_calc()
-        #self.currentOffsetByNormalResistance = self.currentOffsetByNormalResistance_calc()
-                
-        self.gaussianBinSlopeFit = self.gaussianBinSlopeFit_calc()
-        
+            self.information()
+
         #initiate a simulated IV curve. As default the convolution fit is used. This causes a huge delay durig start up.
         if not self.skip_IV_simulation:
             self.set_simulatedIV(self.convolution_most_parameters_stepwise_Fit_Calc())
@@ -232,19 +244,22 @@ class IV_Response():
 #            self.chalmers_Fit = self.chalmers_Fit_calc()
 #            self.convolution_perfect_IV_curve_Fit = self.convolution_perfect_IV_curve_Fit_calc()
 #        
-        self.information()
         
     def information(self):
         '''This function prints and returns the characteristic parameters of the SIS junction.
         TODO add standard deviation
         '''
         txt = ''
-        txt += 'Gap Voltage \t\t\t %.2f mV \n'%self.gapVoltage
-        txt += 'Critical Current \t\t %.1f uA \n'%self.criticalCurrent
-        txt += 'Normal Resistance \t %.2f Ohm \n'%self.rN
-        txt += 'Subgap Resistance \t %.1f Ohm \n'%self.rSG
-        txt += 'Voltage Offset \t\t\t %.2f mV \n'%self.offset[0]
-        txt += 'Current Offset \t\t\t %.2f uA '%self.offset[1]
+        txt += 'Gap Voltage \t\t\t  %.2f mV\n'%self.gapVoltage
+        txt += 'Critical Current \t\t  %.1f uA\n'%self.criticalCurrent
+        if not self.junctionArea == None:
+            txt += 'Critical Current Density %.1f kA/cm$^2$\n'%(self.criticalCurrent/self.junctionArea*.1)
+        txt += 'Normal Resistance \t %.2f Ohm\n'%self.rN
+        txt += 'Subgap Resistance \t %.1f Ohm\n'%self.rSG
+        if not self.normalResistance300K == None:
+            txt += 'Subgap Resistance \t\t    %.1f\n'%(self.normalResistance300K/self.rN)
+        txt += 'Voltage Offset \t\t\t%.3f mV\n'%self.offset[0]
+        txt += 'Current Offset \t\t\t   %.2f uA'%self.offset[1]
         print(txt)
         return txt
     
@@ -262,8 +277,7 @@ class IV_Response():
         '''
         plot(self.binedIVData)
         plt.annotate(self.information().expandtabs(),(positionInfoBox[0],positionInfoBox[1]),xytext=(positionInfoBox[2], positionInfoBox[3]),
-                     linespacing=linespacing, size=fontsize, bbox=dict(boxstyle="round", fc="w") )
-
+                     linespacing=linespacing, size=fontsize, bbox=dict(boxstyle="round", fc="w",alpha=0.8) )
     def plot_slope_raw_unsorted(self):
         '''This function plots the slope of the raw unsorted data.
         '''
@@ -361,6 +375,7 @@ class IV_Response():
             plt.setp(llines, linewidth=1.5)   # the legend line width
             #plt.rcParams.update({'legend.handlelength': .5})# the legend line length
             plt.tight_layout()
+        print('\nOffset correction of %s'%self.filename)
         origin = self.offset_from_raw_data()
         transition = self.offset_from_maxSlopeVgapAndCriticalCurrent()
         transitionVoltageRnCurrent = [transition[0],
